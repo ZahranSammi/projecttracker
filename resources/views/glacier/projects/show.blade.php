@@ -30,12 +30,12 @@
 
                 <div class="mt-6 space-y-4">
                     @foreach ($milestones as $milestone)
-                        <div class="rounded-2xl border border-white/8 bg-white/4 p-4">
+                        <div class="surface-subtle rounded-2xl p-4">
                             <div class="flex items-center justify-between gap-4">
                                 <p class="font-semibold text-white">{{ $milestone['label'] }}</p>
                                 <span class="text-sm text-copy-muted">{{ $milestone['progress'] }}%</span>
                             </div>
-                            <div class="mt-3 h-2 rounded-full bg-white/8">
+                            <div class="surface-progress-track mt-3 h-2 rounded-full">
                                 <div class="h-2 rounded-full bg-primary" style="width: {{ $milestone['progress'] }}%"></div>
                             </div>
                         </div>

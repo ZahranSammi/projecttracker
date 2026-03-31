@@ -12,6 +12,7 @@
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+            @include('partials.theme-init')
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @else
             <style>
@@ -23,6 +24,9 @@
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
+                    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+                        @include('partials.theme-toggle', ['buttonClass' => 'theme-toggle'])
+                    @endif
                     @auth
                         <a
                             href="{{ url('/dashboard') }}"

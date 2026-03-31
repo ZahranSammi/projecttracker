@@ -1,0 +1,90 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    working_dir: /var/www/html
+    environment: &app-env
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: projecttracker
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      SESSION_DRIVER: database
+      QUEUE_CONNECTION: database
+      CACHE_STORE: database
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+      - composer-cache:/tmp/composer/cache
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    command: >
+      sh -lc "until php artisan migrate --force --no-interaction; do
+      echo 'Waiting for database...';
+      sleep 2;
+      done &&
+      php artisan serve --host=0.0.0.0 --port=8000"
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    working_dir: /var/www/html
+    environment: *app-env
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+      - composer-cache:/tmp/composer/cache
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -lc "until php artisan migrate:status --no-interaction >/dev/null 2>&1; do
+      echo 'Waiting for migrations...';
+      sleep 2;
+      done &&
+      php artisan queue:listen --tries=1 --verbose"
+
+  vite:
+    image: node:22-alpine
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - node-modules:/var/www/html/node_modules
+    ports:
+      - "5173:5173"
+    command: >
+      sh -lc "if [ ! -d node_modules ] || [ -z \"$(ls -A node_modules 2>/dev/null)\" ]; then
+      npm ci;
+      fi &&
+      npm run dev -- --host 0.0.0.0 --port 5173"
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: projecttracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d projecttracker"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
+  vendor:
+  node-modules:
+  composer-cache:

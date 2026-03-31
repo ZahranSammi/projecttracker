@@ -52,20 +52,20 @@
                         <p class="mt-3 max-w-2xl text-sm leading-6 text-copy-muted">{{ $spotlightProject['summary'] ?? 'Create a project to start tracking delivery.' }}</p>
                     </div>
                     @if ($spotlightProject)
-                        <img class="h-20 w-20 rounded-3xl border border-white/10 object-cover" src="{{ asset($spotlightProject['logo']) }}" alt="{{ $spotlightProject['title'] }}">
+                        <img class="surface-frame h-20 w-20 rounded-3xl border object-cover" src="{{ asset($spotlightProject['logo']) }}" alt="{{ $spotlightProject['title'] }}">
                     @endif
                 </div>
 
                 <div class="mt-6 grid gap-4 md:grid-cols-3">
-                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div class="surface-subtle rounded-2xl p-4">
                         <p class="text-xs uppercase tracking-[0.24em] text-copy-muted">Health</p>
                         <p class="mt-2 text-lg font-semibold text-white">{{ $spotlightProject['health'] ?? 'Ready' }}</p>
                     </div>
-                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div class="surface-subtle rounded-2xl p-4">
                         <p class="text-xs uppercase tracking-[0.24em] text-copy-muted">Progress</p>
                         <p class="mt-2 text-lg font-semibold text-white">{{ $spotlightProject['progress'] ?? 0 }}%</p>
                     </div>
-                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div class="surface-subtle rounded-2xl p-4">
                         <p class="text-xs uppercase tracking-[0.24em] text-copy-muted">Timeline</p>
                         <p class="mt-2 text-lg font-semibold text-white">{{ $spotlightProject['timeline'] ?? 'No issues yet' }}</p>
                     </div>
@@ -96,7 +96,7 @@
                             <img class="avatar avatar-sm justify-self-start md:justify-self-end" src="{{ asset($issue['assignee']['avatar']) }}" alt="{{ $issue['assignee']['name'] }}">
                         </a>
                     @empty
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-copy-muted">
+                        <div class="surface-subtle rounded-2xl p-5 text-sm text-copy-muted">
                             No issues yet. Once work is created, the most important items will appear here first.
                         </div>
                     @endforelse
@@ -127,7 +127,7 @@
                 <h2 class="text-xl font-semibold text-white">Recent changes</h2>
                 <div class="mt-5 space-y-4">
                     @foreach ($activityFeed as $event)
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div class="surface-subtle rounded-2xl p-4">
                             <p class="text-sm font-medium text-white">{{ $event['title'] }}</p>
                             <p class="mt-2 text-xs uppercase tracking-[0.24em] text-copy-muted">{{ $event['time'] }}</p>
                         </div>

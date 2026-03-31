@@ -20,7 +20,7 @@
             <article class="glass-panel overflow-hidden p-6">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div class="flex items-start gap-4">
-                        <img class="h-16 w-16 rounded-3xl border border-white/10 object-cover" src="{{ asset($project['logo']) }}" alt="{{ $project['title'] }}">
+                        <img class="surface-frame h-16 w-16 rounded-3xl border object-cover" src="{{ asset($project['logo']) }}" alt="{{ $project['title'] }}">
                         <div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="chip {{ $project['health'] === 'Shipping' ? 'chip-primary' : ($project['health'] === 'Focused' ? 'chip-tertiary' : 'chip-secondary') }}">{{ $project['health'] }}</span>
@@ -38,7 +38,7 @@
                         <span>Progress</span>
                         <span>{{ $project['progress'] }}%</span>
                     </div>
-                    <div class="h-2 rounded-full bg-white/8">
+                    <div class="surface-progress-track h-2 rounded-full">
                         <div class="h-2 rounded-full bg-primary" style="width: {{ $project['progress'] }}%"></div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                 </div>
             </article>
         @empty
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-copy-muted">
+            <div class="surface-subtle rounded-2xl p-6 text-sm text-copy-muted">
                 No projects yet. Create a project and it will appear here with progress and team ownership.
             </div>
         @endforelse

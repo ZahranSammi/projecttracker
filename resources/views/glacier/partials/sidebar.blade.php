@@ -39,7 +39,7 @@
     </div>
 
     @if (! empty($secondaryItems))
-        <div class="mt-auto space-y-1 border-t border-white/8 pt-4">
+        <div class="surface-divider-top mt-auto space-y-1 pt-4">
             @foreach ($secondaryItems as $item)
                 <span class="nav-link nav-link-muted">
                     <span class="material-symbols-outlined text-[20px]">{{ $item['icon'] }}</span>

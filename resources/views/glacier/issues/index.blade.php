@@ -58,7 +58,7 @@
                     </div>
                 </article>
             @empty
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-copy-muted">
+                <div class="surface-subtle rounded-2xl p-6 text-sm text-copy-muted">
                     No issues yet. Once work is added, this page will become the main list for triage.
                 </div>
             @endforelse

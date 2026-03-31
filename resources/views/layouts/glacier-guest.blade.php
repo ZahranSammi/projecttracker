@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,12 +8,16 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+        @include('partials.theme-init')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
         <div class="glacier-auth-shell">
             <div class="glacier-orb -right-24 top-0 h-80 w-80 bg-primary/20"></div>
             <div class="glacier-orb -bottom-10 -left-12 h-72 w-72 bg-tertiary/10"></div>
+            <div class="mb-6 flex justify-end">
+                @include('partials.theme-toggle')
+            </div>
 
             <div class="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center">
                 <div class="w-full">

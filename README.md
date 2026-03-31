@@ -55,6 +55,53 @@ tests/
 
 ## Menjalankan Project
 
+### Opsi A. Jalankan dengan Docker
+
+Jalankan seluruh stack Laravel, PostgreSQL, queue worker, dan Vite:
+
+```bash
+docker compose up --build
+```
+
+Service yang akan aktif:
+
+- App Laravel: `http://localhost:8000`
+- Vite dev server: `http://localhost:5173`
+- PostgreSQL: `localhost:5432`
+
+Boot pertama akan:
+
+- build image PHP
+- install dependency Composer di container
+- menunggu PostgreSQL siap
+- menjalankan migration
+
+Untuk isi demo data:
+
+```bash
+docker compose exec app php artisan db:seed
+```
+
+Untuk reset database:
+
+```bash
+docker compose exec app php artisan migrate:fresh --seed
+```
+
+Untuk menghentikan stack:
+
+```bash
+docker compose down
+```
+
+Untuk menghapus volume database juga:
+
+```bash
+docker compose down -v
+```
+
+### Opsi B. Jalankan tanpa Docker
+
 ### 1. Install dependency
 
 ```bash

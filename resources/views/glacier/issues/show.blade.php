@@ -32,15 +32,15 @@
                 </p>
 
                 <div class="mt-6 grid gap-4 md:grid-cols-3">
-                    <div class="rounded-2xl border border-white/8 bg-white/4 p-4">
+                    <div class="surface-subtle rounded-2xl p-4">
                         <p class="text-xs uppercase tracking-[0.24em] text-copy-muted">Project</p>
                         <p class="mt-2 font-semibold text-white">{{ $issue['project'] }}</p>
                     </div>
-                    <div class="rounded-2xl border border-white/8 bg-white/4 p-4">
+                    <div class="surface-subtle rounded-2xl p-4">
                         <p class="text-xs uppercase tracking-[0.24em] text-copy-muted">Due</p>
                         <p class="mt-2 font-semibold text-white">{{ $issue['due'] }}</p>
                     </div>
-                    <div class="rounded-2xl border border-white/8 bg-white/4 p-4">
+                    <div class="surface-subtle rounded-2xl p-4">
                         <p class="text-xs uppercase tracking-[0.24em] text-copy-muted">Attachments</p>
                         <p class="mt-2 font-semibold text-white">{{ $issue['attachments'] }}</p>
                     </div>
@@ -51,7 +51,7 @@
                 <h2 class="text-xl font-semibold text-white">Recent changes</h2>
                 <div class="mt-5 space-y-4">
                     @foreach ($timeline as $event)
-                        <div class="rounded-2xl border border-white/8 bg-white/4 p-4">
+                        <div class="surface-subtle rounded-2xl p-4">
                             <p class="text-sm font-medium text-white">{{ $event['title'] }}</p>
                             <p class="mt-2 text-xs uppercase tracking-[0.24em] text-copy-muted">{{ $event['time'] }}</p>
                         </div>
@@ -67,7 +67,7 @@
 
                 <div class="mt-5 space-y-4">
                     @foreach ($comments as $comment)
-                        <div class="rounded-2xl border border-white/8 bg-white/4 p-4">
+                        <div class="surface-subtle rounded-2xl p-4">
                             <div class="flex items-center gap-3">
                                 <img class="avatar avatar-sm" src="{{ asset($comment['author']['avatar']) }}" alt="{{ $comment['author']['name'] }}">
                                 <div>

@@ -80,9 +80,9 @@
                 </form>
 
                 <div class="my-6 flex items-center gap-4">
-                    <div class="h-px flex-1 bg-white/8"></div>
+                    <div class="surface-divider-line h-px flex-1"></div>
                     <span class="text-xs font-semibold uppercase tracking-[0.24em] text-copy-muted">or continue with</span>
-                    <div class="h-px flex-1 bg-white/8"></div>
+                    <div class="surface-divider-line h-px flex-1"></div>
                 </div>
 
                 <div class="grid gap-3 sm:grid-cols-2">
