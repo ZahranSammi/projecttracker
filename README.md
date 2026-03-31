@@ -1,58 +1,226 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Glacier Issue Tracker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Glacier Issue Tracker adalah aplikasi issue tracking modern berbasis Laravel untuk tim developer dan startup. Project ini menggabungkan:
 
-## About Laravel
+- Laravel 13 sebagai application core
+- Blade + Tailwind CSS untuk web UI saat ini
+- GraphQL via Lighthouse untuk akses data client-server
+- PostgreSQL-compatible relational model
+- SQLite sebagai default local dev database di repo ini
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+UI dan domain model-nya dirancang untuk kebutuhan issue tracking ala Jira, Linear, dan GitHub Issues, dengan fokus pada dashboard, project tracking, issue detail, comments, activity timeline, dan kanban board.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fitur Yang Sudah Diimplementasikan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Login, register, forgot password flow di Laravel
+- Dashboard workspace dengan metrics, priority queue, team signal, dan activity feed
+- Project list dan project detail
+- Issue list dan issue detail
+- Comment posting pada issue detail
+- Kanban board per project
+- Workspace, project, issue, label, status, comment, dan activity log data model
+- GraphQL endpoint di `/graphql`
+- Seeded demo workspace lengkap untuk local preview
+- Feature tests untuk browser flow dan GraphQL flow
 
-## Learning Laravel
+## Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP `^8.3`
+- Laravel `^13.0`
+- Lighthouse GraphQL `^6.66`
+- Tailwind CSS `^4`
+- Vite `^8`
+- Pest untuk testing
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Struktur Utama
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```text
+app/
+  GraphQL/
+  Http/Controllers/
+  Models/
+  Policies/
+  Services/
+database/
+  migrations/
+  seeders/
+graphql/
+  schema.graphql
+resources/
+  css/
+  js/
+  views/
+tests/
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Menjalankan Project
 
-## Contributing
+### 1. Install dependency
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer install
+npm install
+```
 
-## Code of Conduct
+### 2. Siapkan environment
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+copy .env.example .env
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+Repo ini default ke SQLite. Pastikan file database sudah ada:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+type nul > database/database.sqlite
+```
 
-## License
+Lalu jalankan migration dan seed:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan migrate:fresh --seed
+```
+
+### 3. Jalankan app
+
+Terminal 1:
+
+```bash
+php artisan serve
+```
+
+Terminal 2:
+
+```bash
+npm run dev
+```
+
+Atau gunakan script dev bawaan:
+
+```bash
+composer run dev
+```
+
+## Akun Demo
+
+Setelah `php artisan migrate:fresh --seed`, login dengan:
+
+- Email: `zahra@glacier.app`
+- Password: `preview-demo`
+
+## Route Utama
+
+- `/login`
+- `/register`
+- `/forgot-password`
+- `/dashboard`
+- `/projects`
+- `/projects/{project}`
+- `/issues`
+- `/issues/{issue}`
+- `/kanban?project={projectId}`
+- `/graphql`
+
+## GraphQL
+
+GraphQL dijalankan dari Laravel melalui Lighthouse.
+
+Endpoint:
+
+```text
+/graphql
+```
+
+Contoh query:
+
+```graphql
+query TrackerOverview($workspaceId: ID!, $projectId: ID!) {
+  me {
+    name
+    email
+  }
+  projects(workspaceId: $workspaceId) {
+    id
+    name
+    key
+  }
+  issues(projectId: $projectId) {
+    totalCount
+    nodes {
+      id
+      identifier
+      title
+      priority
+      status {
+        name
+      }
+    }
+  }
+}
+```
+
+Mutation utama yang sudah tersedia:
+
+- `login`
+- `register`
+- `createProject`
+- `updateProject`
+- `createIssue`
+- `updateIssue`
+- `deleteIssue`
+- `assignIssue`
+- `moveIssueStatus`
+- `addComment`
+- `updateProfile`
+
+Schema GraphQL ada di:
+
+- `graphql/schema.graphql`
+
+## Database Model
+
+Entity inti yang sudah dimodelkan:
+
+- `users`
+- `workspaces`
+- `team_members`
+- `projects`
+- `issue_statuses`
+- `labels`
+- `issues`
+- `issue_labels`
+- `comments`
+- `activity_logs`
+
+Model ini disusun agar tetap compatible untuk PostgreSQL production, walaupun local repo saat ini default ke SQLite.
+
+## Testing
+
+Jalankan seluruh test:
+
+```bash
+php artisan test
+```
+
+Test saat ini mencakup:
+
+- auth page rendering
+- login flow
+- seeded tracker page rendering
+- GraphQL query
+- GraphQL mutation
+
+## Catatan Implementasi
+
+- Arsitektur saat ini Laravel-first, bukan app terpisah berbasis Node/Next.js.
+- Frontend yang berjalan sekarang masih Blade-based, dengan UI Glacier yang sudah terhubung ke data nyata.
+- Spec produk lengkap ada di `docs/issue-tracker-saas-spec.md`.
+- Inertia + React masih bisa menjadi langkah berikutnya, tetapi bukan syarat untuk menjalankan app saat ini.
+
+## Next Step Yang Masuk Akal
+
+- tambah settings dan profile pages berbasis data nyata
+- tambah create/edit issue modal dari UI
+- tambah filter, sorting, dan pagination issue list yang lebih lengkap
+- tambah drag and drop kanban di frontend
+- pindahkan shell frontend ke Inertia + React jika ingin mengikuti arah frontend yang direkomendasikan di spec
