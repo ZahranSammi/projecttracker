@@ -1,0 +1,296 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar JSON
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum IssuePriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum IssueStatusType {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  CANCELED
+}
+
+type Query {
+  me: User @field(resolver: "App\\GraphQL\\Queries\\ViewerQuery@me")
+  projects(workspaceId: ID!, search: String, pagination: PaginationInput): [Project!]!
+    @field(resolver: "App\\GraphQL\\Queries\\ProjectQuery@projects")
+  project(id: ID!): Project
+    @field(resolver: "App\\GraphQL\\Queries\\ProjectQuery@project")
+  issues(
+    projectId: ID!
+    filters: IssueFilterInput
+    search: String
+    sortBy: String = "updatedAt"
+    sortDirection: String = "DESC"
+    pagination: PaginationInput
+  ): IssueConnection!
+    @field(resolver: "App\\GraphQL\\Queries\\IssueQuery@issues")
+  issue(id: ID!): Issue
+    @field(resolver: "App\\GraphQL\\Queries\\IssueQuery@issue")
+  myAssignedIssues(
+    workspaceId: ID!
+    filters: IssueFilterInput
+    pagination: PaginationInput
+  ): IssueConnection!
+    @field(resolver: "App\\GraphQL\\Queries\\IssueQuery@myAssignedIssues")
+  activityFeed(
+    workspaceId: ID!
+    projectId: ID
+    pagination: PaginationInput
+  ): ActivityLogConnection!
+    @field(resolver: "App\\GraphQL\\Queries\\ActivityFeedQuery@feed")
+}
+
+type Mutation {
+  login(email: String!, password: String!): AuthPayload!
+    @field(resolver: "App\\GraphQL\\Mutations\\AuthMutation@login")
+  register(input: RegisterInput!): AuthPayload!
+    @field(resolver: "App\\GraphQL\\Mutations\\AuthMutation@register")
+  createProject(input: CreateProjectInput!): Project!
+    @field(resolver: "App\\GraphQL\\Mutations\\ProjectMutation@createProject")
+  updateProject(id: ID!, input: UpdateProjectInput!): Project!
+    @field(resolver: "App\\GraphQL\\Mutations\\ProjectMutation@updateProject")
+  createIssue(input: CreateIssueInput!): Issue!
+    @field(resolver: "App\\GraphQL\\Mutations\\IssueMutation@createIssue")
+  updateIssue(id: ID!, input: UpdateIssueInput!): Issue!
+    @field(resolver: "App\\GraphQL\\Mutations\\IssueMutation@updateIssue")
+  deleteIssue(id: ID!): Boolean!
+    @field(resolver: "App\\GraphQL\\Mutations\\IssueMutation@deleteIssue")
+  assignIssue(issueId: ID!, assigneeId: ID): Issue!
+    @field(resolver: "App\\GraphQL\\Mutations\\IssueMutation@assignIssue")
+  moveIssueStatus(issueId: ID!, statusId: ID!): Issue!
+    @field(resolver: "App\\GraphQL\\Mutations\\IssueMutation@moveIssueStatus")
+  addComment(input: AddCommentInput!): Comment!
+    @field(resolver: "App\\GraphQL\\Mutations\\CommentMutation@addComment")
+  updateProfile(input: UpdateProfileInput!): User!
+    @field(resolver: "App\\GraphQL\\Mutations\\ProfileMutation@updateProfile")
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  avatarUrl: String @rename(attribute: "avatar_path")
+  timezone: String
+  bio: String
+  memberships: [TeamMember!]! @hasMany
+  assignedIssues(projectId: ID, pagination: PaginationInput): IssueConnection!
+    @field(resolver: "App\\GraphQL\\Queries\\IssueQuery@assignedIssuesForUser")
+  createdAt: DateTime! @rename(attribute: "created_at")
+  updatedAt: DateTime! @rename(attribute: "updated_at")
+}
+
+type Workspace {
+  id: ID!
+  name: String!
+  slug: String!
+  role: Role! @field(resolver: "App\\GraphQL\\Queries\\ViewerQuery@workspaceRole")
+  members: [TeamMember!]! @hasMany(relation: "memberships")
+  projects: [Project!]! @hasMany
+  labels: [Label!]! @hasMany
+  createdAt: DateTime! @rename(attribute: "created_at")
+  updatedAt: DateTime! @rename(attribute: "updated_at")
+}
+
+type TeamMember {
+  id: ID!
+  role: Role!
+  user: User! @belongsTo
+  workspace: Workspace! @belongsTo
+  joinedAt: DateTime! @rename(attribute: "joined_at")
+}
+
+type Project {
+  id: ID!
+  workspaceId: ID! @rename(attribute: "workspace_id")
+  key: String!
+  name: String!
+  description: String
+  isArchived: Boolean! @rename(attribute: "is_archived")
+  issueStats: ProjectIssueStats! @field(resolver: "App\\GraphQL\\Queries\\ProjectQuery@issueStats")
+  issues(filters: IssueFilterInput, pagination: PaginationInput): IssueConnection!
+    @field(resolver: "App\\GraphQL\\Queries\\IssueQuery@issuesForProject")
+  createdAt: DateTime! @rename(attribute: "created_at")
+  updatedAt: DateTime! @rename(attribute: "updated_at")
+}
+
+type ProjectIssueStats {
+  total: Int!
+  backlog: Int!
+  todo: Int!
+  inProgress: Int!
+  inReview: Int!
+  done: Int!
+  overdue: Int!
+}
+
+type Issue {
+  id: ID!
+  projectId: ID! @rename(attribute: "project_id")
+  workspaceId: ID! @rename(attribute: "workspace_id")
+  number: Int!
+  identifier: String!
+  title: String!
+  description: String
+  status: IssueStatus! @belongsTo
+  priority: IssuePriority!
+  assignee: User @belongsTo
+  reporter: User! @belongsTo
+  labels: [Label!]! @belongsToMany
+  dueDate: DateTime @rename(attribute: "due_date")
+  comments(pagination: PaginationInput): CommentConnection!
+    @field(resolver: "App\\GraphQL\\Queries\\IssueQuery@comments")
+  activity(pagination: PaginationInput): ActivityLogConnection!
+    @field(resolver: "App\\GraphQL\\Queries\\IssueQuery@activity")
+  createdAt: DateTime! @rename(attribute: "created_at")
+  updatedAt: DateTime! @rename(attribute: "updated_at")
+}
+
+type IssueStatus {
+  id: ID!
+  name: String!
+  type: IssueStatusType!
+  color: String!
+  position: Int!
+}
+
+type Comment {
+  id: ID!
+  issueId: ID! @rename(attribute: "issue_id")
+  author: User! @belongsTo
+  body: String!
+  createdAt: DateTime! @rename(attribute: "created_at")
+  updatedAt: DateTime! @rename(attribute: "updated_at")
+}
+
+type Label {
+  id: ID!
+  workspaceId: ID! @rename(attribute: "workspace_id")
+  name: String!
+  color: String!
+  description: String
+}
+
+type ActivityLog {
+  id: ID!
+  workspaceId: ID! @rename(attribute: "workspace_id")
+  actor: User @belongsTo
+  entityType: String! @rename(attribute: "entity_type")
+  entityId: ID @rename(attribute: "entity_id")
+  action: String!
+  metadata: JSON
+  createdAt: DateTime! @rename(attribute: "created_at")
+}
+
+type AuthPayload {
+  token: String!
+  refreshToken: String
+  user: User!
+  workspace: Workspace!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type IssueConnection {
+  nodes: [Issue!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CommentConnection {
+  nodes: [Comment!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ActivityLogConnection {
+  nodes: [ActivityLog!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input PaginationInput {
+  first: Int = 20
+  after: String
+}
+
+input IssueFilterInput {
+  statusIds: [ID!]
+  priorities: [IssuePriority!]
+  assigneeIds: [ID!]
+  reporterIds: [ID!]
+  labelIds: [ID!]
+  dueDateFrom: DateTime
+  dueDateTo: DateTime
+  includeCompleted: Boolean
+}
+
+input RegisterInput {
+  name: String!
+  workspaceName: String!
+  email: String!
+  password: String!
+}
+
+input CreateProjectInput {
+  workspaceId: ID!
+  name: String!
+  key: String!
+  description: String
+}
+
+input UpdateProjectInput {
+  name: String
+  description: String
+  isArchived: Boolean
+  leadUserId: ID
+}
+
+input CreateIssueInput {
+  projectId: ID!
+  title: String!
+  description: String
+  statusId: ID
+  priority: IssuePriority = MEDIUM
+  assigneeId: ID
+  reporterId: ID
+  labelIds: [ID!]
+  dueDate: DateTime
+}
+
+input UpdateIssueInput {
+  title: String
+  description: String
+  statusId: ID
+  priority: IssuePriority
+  assigneeId: ID
+  labelIds: [ID!]
+  dueDate: DateTime
+}
+
+input AddCommentInput {
+  issueId: ID!
+  body: String!
+}
+
+input UpdateProfileInput {
+  name: String
+  avatarUrl: String
+  timezone: String
+  bio: String
+}
