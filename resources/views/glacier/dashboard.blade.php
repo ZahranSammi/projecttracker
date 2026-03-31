@@ -3,27 +3,27 @@
 @section('content')
     <section class="mb-8 hero-grid items-start">
         <div>
-            <span class="chip chip-primary mb-4">Overview</span>
+            <span class="chip chip-primary mb-4">Today</span>
             <h1 class="section-heading">Dashboard</h1>
             <p class="section-copy mt-3 max-w-2xl">
-                A calm operating surface for the Glacier preview. Track sprint health, follow the highest-risk issues, and keep the team oriented without digging through noisy menus.
+                Start here when you want the fastest picture of the workspace. This page shows what needs attention, who is involved, and what changed most recently.
             </p>
         </div>
 
         <div class="glass-panel flex flex-wrap items-center justify-between gap-4 p-5">
             <div>
-                <p class="text-sm font-semibold text-white">Spotlight project</p>
+                <p class="text-sm font-semibold text-white">Next project to review</p>
                 @if ($spotlightProject)
                     <p class="mt-1 text-xl font-semibold text-gradient">{{ $spotlightProject['title'] }}</p>
-                    <p class="mt-2 max-w-md text-sm leading-6 text-copy-muted">{{ $spotlightProject['summary'] }}</p>
+                    <p class="mt-2 max-w-md text-sm leading-6 text-copy-muted">Open this project if you want the clearest view of current delivery progress and recent issues.</p>
                 @else
                     <p class="mt-1 text-xl font-semibold text-gradient">No projects yet</p>
-                    <p class="mt-2 max-w-md text-sm leading-6 text-copy-muted">Create your first project to start tracking work across the workspace.</p>
+                    <p class="mt-2 max-w-md text-sm leading-6 text-copy-muted">Create a project first, then this area will highlight where to focus next.</p>
                 @endif
             </div>
             @if ($spotlightProject)
                 <a class="btn-secondary" href="{{ route('projects.show', $spotlightProject['id']) }}">
-                    Open Project
+                    Open project
                     <span class="material-symbols-outlined text-base">north_east</span>
                 </a>
             @endif
@@ -75,10 +75,10 @@
             <article class="glass-panel p-6">
                 <div class="mb-5 flex items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-xl font-semibold text-white">Priority Queue</h2>
-                        <p class="mt-2 text-sm text-copy-muted">The most visible issues across Glacier right now.</p>
+                        <h2 class="text-xl font-semibold text-white">Needs attention</h2>
+                        <p class="mt-2 text-sm text-copy-muted">Start with these issues first. They are the clearest signal for current risk or urgency.</p>
                     </div>
-                    <a class="btn-secondary" href="{{ route('issues.index') }}">View All Issues</a>
+                    <a class="btn-secondary" href="{{ route('issues.index') }}">See all issues</a>
                 </div>
 
                 <div class="space-y-3">
@@ -97,7 +97,7 @@
                         </a>
                     @empty
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-copy-muted">
-                            No issues yet. Create a project and start tracking work.
+                            No issues yet. Once work is created, the most important items will appear here first.
                         </div>
                     @endforelse
                 </div>
@@ -106,8 +106,8 @@
 
         <div class="space-y-6">
             <article class="glass-panel p-6">
-                <h2 class="text-xl font-semibold text-white">Team Signal</h2>
-                <p class="mt-2 text-sm text-copy-muted">A quick read on the people carrying the current sprint.</p>
+                <h2 class="text-xl font-semibold text-white">Who is working on this</h2>
+                <p class="mt-2 text-sm text-copy-muted">A quick list of the people you will most likely need to coordinate with today.</p>
 
                 <div class="mt-5 space-y-4">
                     @foreach ($teamMembers as $member)
@@ -124,7 +124,7 @@
             </article>
 
             <article class="glass-panel p-6">
-                <h2 class="text-xl font-semibold text-white">Recent Activity</h2>
+                <h2 class="text-xl font-semibold text-white">Recent changes</h2>
                 <div class="mt-5 space-y-4">
                     @foreach ($activityFeed as $event)
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-4">

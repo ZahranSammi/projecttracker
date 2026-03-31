@@ -7,9 +7,9 @@
                 <span class="chip chip-primary">{{ $project['health'] }}</span>
                 <span class="chip">{{ $project['timeline'] }}</span>
             </div>
-            <h1 class="section-heading">Project Detail</h1>
+            <h1 class="section-heading">Project overview</h1>
             <p class="mt-4 text-2xl font-semibold tracking-tight text-white">{{ $project['title'] }}</p>
-            <p class="section-copy mt-3 max-w-2xl">{{ $project['summary'] }}</p>
+            <p class="section-copy mt-3 max-w-2xl">Use this page to understand project progress, current issues, and the people responsible for moving it forward.</p>
         </div>
 
         <div class="glass-panel overflow-hidden p-4">
@@ -22,8 +22,8 @@
             <article class="glass-panel p-6">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-xl font-semibold text-white">Milestones</h2>
-                        <p class="mt-2 text-sm text-copy-muted">A simple readout for the work streams that matter most in this preview.</p>
+                        <h2 class="text-xl font-semibold text-white">Progress</h2>
+                        <p class="mt-2 text-sm text-copy-muted">These bars show how far the project has moved through delivery and review.</p>
                     </div>
                     <span class="chip chip-primary">{{ $project['progress'] }}% complete</span>
                 </div>
@@ -46,10 +46,10 @@
             <article class="glass-panel p-6">
                 <div class="mb-5 flex items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-xl font-semibold text-white">Linked Issues</h2>
-                        <p class="mt-2 text-sm text-copy-muted">The most relevant delivery work attached to this project.</p>
+                        <h2 class="text-xl font-semibold text-white">Recent issues</h2>
+                        <p class="mt-2 text-sm text-copy-muted">Open one of these issues if you want the latest delivery details for this project.</p>
                     </div>
-                    <a class="btn-secondary" href="{{ route('issues.index') }}">View Queue</a>
+                    <a class="btn-secondary" href="{{ route('issues.index') }}">See all issues</a>
                 </div>
 
                 <div class="space-y-3">
@@ -83,7 +83,7 @@
             </article>
 
             <article class="glass-panel p-6">
-                <h2 class="text-xl font-semibold text-white">Core Team</h2>
+                <h2 class="text-xl font-semibold text-white">Team</h2>
                 <div class="mt-5 space-y-4">
                     @foreach ($teamMembers as $member)
                         <div class="flex items-center gap-4">

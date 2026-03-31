@@ -41,36 +41,37 @@ test('authenticated users can browse the seeded tracker pages', function () {
         ->get('/dashboard')
         ->assertOk()
         ->assertSee('Dashboard')
-        ->assertSee('Priority Queue');
+        ->assertSee('Needs attention');
 
     $this->actingAs($user)
         ->get('/issues')
         ->assertOk()
-        ->assertSee('Issue List')
+        ->assertSee('Issues')
         ->assertSee($issue->title);
 
     $this->actingAs($user)
         ->get(route('issues.show', $issue))
         ->assertOk()
         ->assertSee($issue->title)
-        ->assertSee('Activity Timeline');
+        ->assertSee('Recent changes');
 
     $this->actingAs($user)
         ->get('/projects')
         ->assertOk()
-        ->assertSee('Project List')
+        ->assertSee('Projects')
         ->assertSee($project->name);
 
     $this->actingAs($user)
         ->get(route('projects.show', $project))
         ->assertOk()
         ->assertSee($project->name)
-        ->assertSee('Milestones');
+        ->assertSee('Project overview')
+        ->assertSee('Progress');
 
     $this->actingAs($user)
         ->get('/kanban?project='.$project->getKey())
         ->assertOk()
-        ->assertSee('Kanban Board');
+        ->assertSee('Kanban board');
 });
 
 test('graphql me and issues queries return seeded tracker data', function () {

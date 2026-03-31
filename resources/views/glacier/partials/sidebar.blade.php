@@ -10,11 +10,13 @@
     </div>
 
     <a class="btn-secondary w-full" href="{{ route('issues.index') }}">
-        <span class="material-symbols-outlined text-base">add</span>
-        New Issue
+        <span class="material-symbols-outlined text-base">list_alt</span>
+        View Issues
     </a>
 
-    <nav class="space-y-1">
+    <div>
+        <p class="px-3 pb-2 text-xs font-semibold uppercase tracking-[0.24em] text-copy-muted">Main menu</p>
+        <nav class="space-y-1">
         @foreach ($sidebarItems as $item)
             @php($classes = 'nav-link' . ($item['active'] ? ' nav-link-active' : '') . (! empty($item['disabled']) ? ' nav-link-muted' : ''))
             @if (! empty($item['disabled']))
@@ -33,18 +35,21 @@
                 </a>
             @endif
         @endforeach
-    </nav>
-
-    <div class="mt-auto space-y-1 border-t border-white/8 pt-4">
-        @foreach ($secondaryItems as $item)
-            <span class="nav-link nav-link-muted">
-                <span class="material-symbols-outlined text-[20px]">{{ $item['icon'] }}</span>
-                {{ $item['label'] }}
-            </span>
-        @endforeach
+        </nav>
     </div>
 
-    <div class="glass-panel mt-2 flex items-center gap-3 rounded-2xl p-3">
+    @if (! empty($secondaryItems))
+        <div class="mt-auto space-y-1 border-t border-white/8 pt-4">
+            @foreach ($secondaryItems as $item)
+                <span class="nav-link nav-link-muted">
+                    <span class="material-symbols-outlined text-[20px]">{{ $item['icon'] }}</span>
+                    {{ $item['label'] }}
+                </span>
+            @endforeach
+        </div>
+    @endif
+
+    <div class="glass-panel mt-auto flex items-center gap-3 rounded-2xl p-3">
         <img class="avatar avatar-sm" src="{{ asset($profile['avatar']) }}" alt="{{ $profile['name'] }}">
         <div class="min-w-0">
             <p class="truncate text-sm font-semibold text-white">{{ $profile['name'] }}</p>

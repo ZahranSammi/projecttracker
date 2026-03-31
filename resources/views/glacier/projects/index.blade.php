@@ -3,14 +3,14 @@
 @section('content')
     <section class="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-            <span class="chip chip-tertiary mb-4">Portfolio</span>
-            <h1 class="section-heading">Project List</h1>
+            <span class="chip chip-tertiary mb-4">Projects</span>
+            <h1 class="section-heading">Projects</h1>
             <p class="section-copy mt-3 max-w-2xl">
-                A single view for Glacier initiatives, each with health, momentum, and a visual cue for who is carrying the work forward.
+                Use this page to compare projects quickly. Each card shows status, progress, owner, and the team involved.
             </p>
         </div>
         <a class="btn-secondary" href="{{ $projects ? route('projects.show', $projects[0]['id']) : route('projects.index') }}">
-            Featured Project
+            Open first project
             <span class="material-symbols-outlined text-base">north_east</span>
         </a>
     </section>
@@ -35,7 +35,7 @@
 
                 <div class="mt-6">
                     <div class="mb-2 flex items-center justify-between text-sm text-copy-muted">
-                        <span>Completion</span>
+                        <span>Progress</span>
                         <span>{{ $project['progress'] }}%</span>
                     </div>
                     <div class="h-2 rounded-full bg-white/8">
@@ -67,7 +67,7 @@
             </article>
         @empty
             <div class="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-copy-muted">
-                No projects exist yet. Create one through the API or seed a workspace to start planning work.
+                No projects yet. Create a project and it will appear here with progress and team ownership.
             </div>
         @endforelse
     </section>

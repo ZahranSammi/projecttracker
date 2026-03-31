@@ -167,11 +167,11 @@ class GlacierController extends Controller
             'pageTitle' => 'Dashboard',
             'activeNav' => 'dashboard',
             'toolbarLinks' => [
-                ['label' => 'Overview', 'route' => 'dashboard', 'active' => true],
-                ['label' => 'Roadmap', 'route' => 'kanban'],
-                ['label' => 'Issues', 'route' => 'issues.index'],
+                ['label' => 'Dashboard', 'route' => 'dashboard', 'active' => true],
+                ['label' => 'Board', 'route' => 'kanban'],
+                ['label' => 'Projects', 'route' => 'projects.index'],
             ],
-            'searchPlaceholder' => 'Search dashboards, issues, and projects...',
+            'topbarSummary' => 'See what needs attention first, who owns it, and what changed recently.',
             'metrics' => $data['metrics'],
             'spotlightProject' => $spotlight ? $this->presentProject($spotlight) : null,
             'priorityIssues' => $data['priorityIssues']->map(fn (Issue $issue): array => $this->presentIssue($issue))->all(),
@@ -194,15 +194,15 @@ class GlacierController extends Controller
             'pageTitle' => 'Issues',
             'activeNav' => 'issues',
             'toolbarLinks' => [
-                ['label' => 'My Issues', 'route' => 'issues.index', 'active' => true],
+                ['label' => 'All Issues', 'route' => 'issues.index', 'active' => true],
                 ['label' => 'Board', 'route' => 'kanban'],
                 [
-                    'label' => 'Project Detail',
+                    'label' => 'Project',
                     'route' => $firstProject ? 'projects.show' : 'projects.index',
                     'parameters' => $firstProject ? [$firstProject->getKey()] : [],
                 ],
             ],
-            'searchPlaceholder' => 'Search issue titles, labels, and assignees...',
+            'topbarSummary' => 'Start with priority, owner, and due date. Open an issue to see the full context.',
             'issueCounters' => [
                 'open' => $openCount,
                 'inProgress' => $inProgressCount,
@@ -232,11 +232,11 @@ class GlacierController extends Controller
             'pageTitle' => 'Issue Detail',
             'activeNav' => 'issues',
             'toolbarLinks' => [
-                ['label' => 'Issue List', 'route' => 'issues.index'],
+                ['label' => 'Issues', 'route' => 'issues.index'],
                 ['label' => $issue->identifier, 'route' => 'issues.show', 'parameters' => [$issue->getKey()], 'active' => true],
-                ['label' => 'Kanban', 'route' => 'kanban', 'parameters' => ['project' => $issue->project_id]],
+                ['label' => 'Board', 'route' => 'kanban', 'parameters' => ['project' => $issue->project_id]],
             ],
-            'searchPlaceholder' => 'Search issue activity...',
+            'topbarSummary' => 'Use this page to understand the issue, follow recent changes, and leave the next comment.',
             'issue' => $this->presentIssue($issue),
             'watchers' => $workspace->memberships
                 ->take(4)
@@ -280,11 +280,11 @@ class GlacierController extends Controller
             'pageTitle' => 'Projects',
             'activeNav' => 'projects',
             'toolbarLinks' => [
-                ['label' => 'Project List', 'route' => 'projects.index', 'active' => true],
-                ['label' => 'Overview', 'route' => 'dashboard'],
-                ['label' => 'Kanban', 'route' => 'kanban'],
+                ['label' => 'Projects', 'route' => 'projects.index', 'active' => true],
+                ['label' => 'Dashboard', 'route' => 'dashboard'],
+                ['label' => 'Board', 'route' => 'kanban'],
             ],
-            'searchPlaceholder' => 'Search projects, owners, and milestones...',
+            'topbarSummary' => 'Each project shows progress, health, owner, and the team currently involved.',
             'projects' => $projects->map(fn (Project $project): array => $this->presentProject($project))->all(),
         ]);
     }
@@ -309,9 +309,9 @@ class GlacierController extends Controller
             'toolbarLinks' => [
                 ['label' => 'Projects', 'route' => 'projects.index'],
                 ['label' => $project->key, 'route' => 'projects.show', 'parameters' => [$project->getKey()], 'active' => true],
-                ['label' => 'Issue Queue', 'route' => 'issues.index'],
+                ['label' => 'Issues', 'route' => 'issues.index'],
             ],
-            'searchPlaceholder' => 'Search milestones and project notes...',
+            'topbarSummary' => 'See project progress, recent issues, and the people responsible for delivery.',
             'project' => $this->presentProject($project),
             'projectIssues' => $project->issues
                 ->sortByDesc('updated_at')
@@ -353,13 +353,13 @@ class GlacierController extends Controller
 
         return $this->appPage('glacier.kanban', $workspace, [
             'pageTitle' => 'Kanban',
-            'activeNav' => 'issues',
+            'activeNav' => 'kanban',
             'toolbarLinks' => [
-                ['label' => 'Issue List', 'route' => 'issues.index'],
-                ['label' => 'Sprint Board', 'route' => 'kanban', 'parameters' => ['project' => $project->getKey()], 'active' => true],
-                ['label' => 'Project Detail', 'route' => 'projects.show', 'parameters' => [$project->getKey()]],
+                ['label' => 'Issues', 'route' => 'issues.index'],
+                ['label' => 'Board', 'route' => 'kanban', 'parameters' => ['project' => $project->getKey()], 'active' => true],
+                ['label' => 'Project', 'route' => 'projects.show', 'parameters' => [$project->getKey()]],
             ],
-            'searchPlaceholder' => 'Search cards and sprint owners...',
+            'topbarSummary' => 'Move across columns from left to right to understand what is next, active, and done.',
             'columns' => $columns,
         ]);
     }
@@ -389,7 +389,7 @@ class GlacierController extends Controller
         return view($view, array_merge($this->sharedAppData($workspace), [
             'sidebarItems' => $this->sidebarItems($data['activeNav'] ?? ''),
             'secondaryItems' => $this->secondaryItems(),
-            'searchPlaceholder' => $data['searchPlaceholder'] ?? 'Search Glacier...',
+            'topbarSummary' => $data['topbarSummary'] ?? 'Stay oriented with the clearest next step on each page.',
             'toolbarLinks' => $data['toolbarLinks'] ?? [],
         ], $data));
     }
@@ -422,19 +422,16 @@ class GlacierController extends Controller
     private function sidebarItems(string $active): array
     {
         return [
-            ['label' => 'Inbox', 'icon' => 'inbox', 'route' => 'dashboard', 'active' => $active === 'dashboard'],
-            ['label' => 'My Issues', 'icon' => 'assignment_ind', 'route' => 'issues.index', 'active' => $active === 'issues'],
+            ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'dashboard', 'active' => $active === 'dashboard'],
+            ['label' => 'Issues', 'icon' => 'assignment_ind', 'route' => 'issues.index', 'active' => $active === 'issues'],
             ['label' => 'Projects', 'icon' => 'account_tree', 'route' => 'projects.index', 'active' => $active === 'projects'],
-            ['label' => 'Kanban', 'icon' => 'view_kanban', 'route' => 'kanban', 'active' => false],
+            ['label' => 'Board', 'icon' => 'view_kanban', 'route' => 'kanban', 'active' => $active === 'kanban'],
         ];
     }
 
     private function secondaryItems(): array
     {
-        return [
-            ['label' => 'Settings', 'icon' => 'settings'],
-            ['label' => 'Help', 'icon' => 'help_outline'],
-        ];
+        return [];
     }
 
     private function presentMember(User $user): array

@@ -4,9 +4,9 @@
             {{ $brand['short'] }}
         </a>
 
-        <div class="relative hidden max-w-xl flex-1 md:block">
-            <span class="material-symbols-outlined pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-copy-muted">search</span>
-            <input class="form-field pl-12" type="text" placeholder="{{ $searchPlaceholder }}">
+        <div class="hidden min-w-0 md:block">
+            <p class="text-sm font-semibold text-white">{{ $pageTitle ?? 'Workspace' }}</p>
+            <p class="truncate text-xs text-copy-muted">{{ $topbarSummary }}</p>
         </div>
 
         @if (! empty($toolbarLinks))
@@ -22,18 +22,17 @@
     </div>
 
     <div class="flex items-center gap-2 lg:gap-4">
-        <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/8 bg-white/5 text-copy-muted">
-            <span class="material-symbols-outlined text-[20px]">notifications</span>
-        </button>
-        <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/8 bg-white/5 text-copy-muted">
-            <span class="material-symbols-outlined text-[20px]">help</span>
-        </button>
+        <div class="hidden text-right lg:block">
+            <p class="text-sm font-semibold text-white">{{ $profile['name'] }}</p>
+            <p class="text-xs text-copy-muted">{{ $profile['role'] }}</p>
+        </div>
+        <img class="avatar avatar-sm" src="{{ asset($profile['avatar']) }}" alt="{{ $profile['name'] }}">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/8 bg-white/5 text-copy-muted" type="submit" title="Sign out">
-                <span class="material-symbols-outlined text-[20px]">logout</span>
+            <button class="btn-secondary px-4 py-2.5" type="submit" title="Sign out">
+                Sign out
+                <span class="material-symbols-outlined text-[18px]">logout</span>
             </button>
         </form>
-        <img class="avatar avatar-sm" src="{{ asset($profile['avatar']) }}" alt="{{ $profile['name'] }}">
     </div>
 </header>

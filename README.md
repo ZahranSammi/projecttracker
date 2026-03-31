@@ -5,8 +5,8 @@ Glacier Issue Tracker adalah aplikasi issue tracking modern berbasis Laravel unt
 - Laravel 13 sebagai application core
 - Blade + Tailwind CSS untuk web UI saat ini
 - GraphQL via Lighthouse untuk akses data client-server
-- PostgreSQL-compatible relational model
-- SQLite sebagai default local dev database di repo ini
+- PostgreSQL sebagai default relational database
+- Tetap kompatibel dengan workflow SQL standar di Laravel
 
 UI dan domain model-nya dirancang untuk kebutuhan issue tracking ala Jira, Linear, dan GitHub Issues, dengan fokus pada dashboard, project tracking, issue detail, comments, activity timeline, dan kanban board.
 
@@ -69,10 +69,10 @@ copy .env.example .env
 php artisan key:generate
 ```
 
-Repo ini default ke SQLite. Pastikan file database sudah ada:
+Repo ini default ke PostgreSQL. Buat database lokal terlebih dahulu:
 
 ```bash
-type nul > database/database.sqlite
+psql -U postgres -c "CREATE DATABASE projecttracker;"
 ```
 
 Lalu jalankan migration dan seed:
@@ -192,7 +192,7 @@ Entity inti yang sudah dimodelkan:
 - `comments`
 - `activity_logs`
 
-Model ini disusun agar tetap compatible untuk PostgreSQL production, walaupun local repo saat ini default ke SQLite.
+Model ini disusun dengan PostgreSQL sebagai default, termasuk relasi, foreign key, index, dan kolom JSON untuk activity metadata.
 
 ## Testing
 

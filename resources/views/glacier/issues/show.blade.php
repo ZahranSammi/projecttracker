@@ -9,9 +9,9 @@
                 <span class="chip">{{ $issue['status'] }}</span>
                 <span class="chip">{{ $issue['identifier'] }}</span>
             </div>
-            <h1 class="section-heading">Issue Detail</h1>
+            <h1 class="section-heading">Issue detail</h1>
             <p class="mt-4 text-xl font-semibold tracking-tight text-white">{{ $issue['title'] }}</p>
-            <p class="section-copy mt-3 max-w-2xl">{{ $issue['description'] }}</p>
+            <p class="section-copy mt-3 max-w-2xl">This page shows what needs to be done, who owns it, what changed recently, and where to continue next.</p>
         </div>
         <div class="glass-panel flex min-w-[18rem] items-center gap-4 p-4">
             <img class="avatar avatar-lg" src="{{ asset($issue['assignee']['avatar']) }}" alt="{{ $issue['assignee']['name'] }}">
@@ -26,7 +26,7 @@
     <section class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         <div class="space-y-6">
             <article class="glass-panel p-6">
-                <h2 class="text-xl font-semibold text-white">Brief</h2>
+                <h2 class="text-xl font-semibold text-white">What needs to be done</h2>
                 <p class="mt-4 text-sm leading-7 text-copy-muted">
                     {{ $issue['description'] }}
                 </p>
@@ -48,7 +48,7 @@
             </article>
 
             <article class="glass-panel p-6">
-                <h2 class="text-xl font-semibold text-white">Activity Timeline</h2>
+                <h2 class="text-xl font-semibold text-white">Recent changes</h2>
                 <div class="mt-5 space-y-4">
                     @foreach ($timeline as $event)
                         <div class="rounded-2xl border border-white/8 bg-white/4 p-4">
@@ -61,7 +61,7 @@
 
             <article class="glass-panel p-6">
                 <div class="flex items-center justify-between gap-4">
-                    <h2 class="text-xl font-semibold text-white">Notes</h2>
+                    <h2 class="text-xl font-semibold text-white">Comments</h2>
                     <span class="chip chip-primary">{{ count($comments) }} Comments</span>
                 </div>
 
@@ -83,8 +83,8 @@
                 <form class="mt-5 space-y-3" method="POST" action="{{ route('issues.comments.store', $issue['id']) }}">
                     @csrf
                     <label class="block">
-                        <span class="mb-2 block text-xs font-semibold uppercase tracking-[0.24em] text-copy-muted">Add Comment</span>
-                        <textarea class="form-field min-h-28" name="body" placeholder="Share context, a fix plan, or a review note..."></textarea>
+                        <span class="mb-2 block text-xs font-semibold uppercase tracking-[0.24em] text-copy-muted">Write a comment</span>
+                        <textarea class="form-field min-h-28" name="body" placeholder="Add the next update, decision, or fix plan..."></textarea>
                     </label>
                     <button class="btn-primary" type="submit">Post Comment</button>
                 </form>
@@ -93,7 +93,7 @@
 
         <div class="space-y-6">
             <article class="glass-panel p-6">
-                <h2 class="text-xl font-semibold text-white">Watchers</h2>
+                <h2 class="text-xl font-semibold text-white">People following this issue</h2>
                 <div class="mt-5 space-y-4">
                     @foreach ($watchers as $watcher)
                         <div class="flex items-center gap-4">
@@ -108,11 +108,11 @@
             </article>
 
             <article class="glass-panel p-6">
-                <h2 class="text-xl font-semibold text-white">Quick Actions</h2>
+                <h2 class="text-xl font-semibold text-white">Next actions</h2>
                 <div class="mt-5 grid gap-3">
-                    <a class="btn-secondary w-full" href="{{ route('issues.index') }}">Back to Issue List</a>
-                    <a class="btn-secondary w-full" href="{{ route('kanban', ['project' => $issue['project_id']]) }}">View on Kanban</a>
-                    <a class="btn-secondary w-full" href="{{ route('projects.show', $issue['project_id']) }}">Open Project Context</a>
+                    <a class="btn-secondary w-full" href="{{ route('issues.index') }}">Back to issues</a>
+                    <a class="btn-secondary w-full" href="{{ route('kanban', ['project' => $issue['project_id']]) }}">Open board</a>
+                    <a class="btn-secondary w-full" href="{{ route('projects.show', $issue['project_id']) }}">Open project</a>
                 </div>
             </article>
         </div>
